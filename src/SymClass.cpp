@@ -10,7 +10,7 @@ void sym_read(sym_code_t * code)
 
 void sym_write(sym_code_t * code)
 {
-	std::cout << code->mem[code->op_code];
+	std::cout << code->mem[code->op_code] << std::endl;
 }
 
 void sym_pop(sym_code_t * code)
@@ -92,7 +92,7 @@ void sym_nop(sym_code_t * code)
 
 void sym_jmp(sym_code_t * code)
 {
-	code->ip = code->op_code;
+	code->ip = code->op_code-1;
 }
 
 void sym_cmp(sym_code_t * code)
@@ -108,25 +108,25 @@ void sym_cmp(sym_code_t * code)
 void sym_jn(sym_code_t * code)
 {
 	if ( code->flag == 1 || code->flag == 2 )
-		code->ip = code->op_code;
+		code->ip = code->op_code-1;
 }
 
 void sym_jz(sym_code_t * code)
 {
 	if (!code->flag)
-		code->ip = code->op_code;
+		code->ip = code->op_code-1;
 }
 
 void sym_jm(sym_code_t * code)
 {
 	if (code->flag == 1)
-		code->ip = code->op_code;
+		code->ip = code->op_code-1;
 }
 
 void sym_jg(sym_code_t * code)
 {
 	if (code->flag == 2)
-		code->ip = code->op_code;
+		code->ip = code->op_code-1;
 }
 
 void sym_exit(sym_code_t * code)
@@ -148,7 +148,7 @@ SymClass::SymClass()
 int SymClass::atoi(char * line)
 {
 	int ret;
-	
+ 
 	for(ret = 0;*line;line++)
 		if (*line >= '0' && *line <= '9')
 			ret = ret * 10 + ((int)*line - '0');
@@ -281,8 +281,6 @@ int SymClass::read_bin(char * name)
 		for(i=0;i<4;i++)
 			if (line[i] >= 0 && line[i] <= 9)
 				line[i] += '0';
-
-		std::cout << line << "\n";
 
 		this->simpletron.mem[this->simpletron.count++] = this->atoi(line);
 	}

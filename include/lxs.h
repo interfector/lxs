@@ -22,7 +22,7 @@
 #define SYM_SHR	14
 #define SYM_DEL	15
 #define SYM_NOP	16
-#define SYM_JMP	18
+#define SYM_JMP	17
 #define SYM_CMP	18
 #define SYM_JN		19
 #define SYM_JZ		20
