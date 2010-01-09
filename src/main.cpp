@@ -10,10 +10,9 @@ int main(int argc,char *argv[])
 	if(!argv[1])
 	{
 		test.stdin_read();
+		
+		std::cout << "\n";
 
-		test.dump();
-
-		return 0;
 	} else if (!strcmp(argv[1],"-s")) {
 		if (!argv[2])
 		{
@@ -31,9 +30,6 @@ int main(int argc,char *argv[])
 			return 1;
 		}
 
-		test.dump();
-
-		return 0;
 	} else if (!strcmp(argv[1],"-x")) {
 		if (!argv[2])
 		{
@@ -55,9 +51,6 @@ int main(int argc,char *argv[])
 			return 1;
 		}
 
-		test.dump();
-
-		return 0;
 	} else if (!strcmp(argv[1],"-c")) {
 		if (!argv[2] || !argv[3]) 
 		{
@@ -76,10 +69,24 @@ int main(int argc,char *argv[])
 		}
 
 		return 0;
+	} else if (!strcmp(argv[1],"-h")) {
+		std::cout << "Usage: " << argv[0] << " [-s] [-x] [-c]\n\t-s\tSelect the source file.\n";
+		std::cout << "\t-x\tSelect the binary source file.\n\t-c\tCompile from plain text source to binary source file.\n";
+		
+		return 0;
+	} else {
+		std::cout << "Error bad usage, type -h for help." << std::endl;
+
+		return 1;
 	}
 
-	std::cout << "Usage: " << argv[0] << " [-s] [-x] [-c]\n\t-s\tSelect the source file.\n";
-	std::cout << "\t-x\tSelect the binary source file.\n\t-c\tCompile from plain text source to binary source file.\n";
+	std::cout << "====== EXECUTING CODE ======\n\n";
+
+	test.execute();
+
+	std::cout << "\n====== END EXECUTING ======\n";
+	
+	test.dump();
 
 	return 0;
 }

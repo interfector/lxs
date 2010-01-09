@@ -222,12 +222,6 @@ void SymClass::stdin_read()
 		this->simpletron.mem[this->simpletron.count++] = op;
 	}
 
-	std::cout << "\n====== EXECUTING CODE ======\n\n";
-
-	this->execute();
-
-	std::cout << "\n====== END EXECUTING ======\n";
-	
 	delete [] line;
 }
 
@@ -248,12 +242,6 @@ int SymClass::readfile(char * name)
 	}
 	
 	file.close();
-	
-	std::cout << "====== EXECUTING CODE ======\n\n";
-
-	this->execute();
-
-	std::cout << "\n====== END EXECUTING ======\n";
 	
 	delete [] line;
 	
@@ -287,12 +275,6 @@ int SymClass::read_bin(char * name)
 	
 	file.close();
 
-	std::cout << "====== EXECUTING CODE ======\n\n";
-
-	this->execute();
-
-	std::cout << "\n====== END EXECUTING ======\n";
-	
 	delete [] line;
 	
 	return 0;
