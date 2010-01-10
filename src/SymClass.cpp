@@ -236,9 +236,13 @@ int SymClass::readfile(char * name)
 		
 	while(!file.eof())
 	{
-		file >> op;
+		//file >> line;
+		
+		file.getline(line,256);
 
-		this->simpletron.mem[this->simpletron.count++] = (int)op;
+		op = this->atoi(line);
+
+		this->simpletron.mem[this->simpletron.count++] = op;
 	}
 	
 	file.close();
