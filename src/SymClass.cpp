@@ -10,7 +10,23 @@ void sym_read(sym_code_t * code)
 
 void sym_write(sym_code_t * code)
 {
-	std::cout << code->mem[code->op_code] << std::endl;
+	switch(code->mode)
+	{
+		case 0:
+			std::cout << code->mem[code->op_code];
+			break;
+		case 1:
+			std::cout << std::hex << code->mem[code->op_code];
+			break;
+		case 2:
+			toBin(code->mem[code->op_code]);
+			break;
+		default:
+			std::cout << code->mem[code->op_code];
+			break;
+	}
+
+	std::cout << std::endl;
 }
 
 void sym_pop(sym_code_t * code)
@@ -136,6 +152,21 @@ void sym_exit(sym_code_t * code)
 	code->ip = code->count;
 }
 
+void sym_chmod(sym_code_t * code)
+{
+	code->mode = code->op_code;
+}
+
+void toBin(int num)
+{
+	int a;
+
+	if ((a = num / 2))
+		toBin(a);
+
+	std::cout << (char)((num % 2)+'0');
+}
+
 SymClass::SymClass()
 {
 	this->simpletron.op_code = 0;
@@ -143,6 +174,7 @@ SymClass::SymClass()
 	this->simpletron.eax = 0;
 	this->simpletron.flag = -1;
 	this->simpletron.ip = 0;
+	this->simpletron.mode = 0;
 }
 
 int SymClass::atoi(char * line)
@@ -179,7 +211,7 @@ int SymClass::execute_op(int op)
 	if (op == -9999)
 		return 0;
 	
-	if(call >= 0 && call <= 23)
+	if(call >= 0 && call <= 24)
 		sym_code_table[call](&simpletron);
 	
 	return 0;
@@ -189,7 +221,7 @@ void SymClass::dump()
 {
 	int i;
 
-	std::cout << "\n=== Registri: ===\n";
+	std::cout << std::dec << "\n=== Registri: ===\n";
 	std::cout << "Accumulatore:        " << this->simpletron.eax << "\n";
 	std::cout << "Numero istruzione:   " << this->simpletron.count << "\n";
 	std::cout << "Operation Code:      " << this->simpletron.op_code << "\n";
