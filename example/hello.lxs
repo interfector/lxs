@@ -1,0 +1,12 @@
+3403 display char
+1107 print H
+1301 push printer
+1406 add one
+1201 pop printer
+2701 jmp snd
+0001 one
+0007 H
+0036 e
+0043 l
+0043 l
+0046 o

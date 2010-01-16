@@ -21,6 +21,9 @@ void sym_write(sym_code_t * code)
 		case 2:
 			toBin(code->mem[code->op_code]);
 			break;
+		case 3:
+			std::cout << (char)(code->mem[code->op_code]+'A');
+			break;
 		default:
 			std::cout << code->mem[code->op_code];
 			break;
@@ -117,7 +120,7 @@ void sym_cmp(sym_code_t * code)
 		code->flag = 0;
 	else if (code->eax < code->mem[code->op_code])
 		code->flag = 1;
-	else if (code->eax == code->mem[code->op_code])
+	else if (code->eax > code->mem[code->op_code])
 		code->flag = 2;
 }
 

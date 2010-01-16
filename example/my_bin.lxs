@@ -1,16 +1,16 @@
 1015 read x
 1315 push x
-1716 div two 
-1215 save x
-1315 push x
 2817 cmp zero
 3014 die
 1816 mod two
 2817 cmp zero
-3012 write zero
+3009 jump nineth
 1118 write one
-2701 jump first
+2710 jump tenth
 1117 write zero
+1315 push x
+1716 div two
+1215 save x
 2701 jump first
 3300 die
 0000 x

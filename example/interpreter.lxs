@@ -1,0 +1,11 @@
+1010  read istr
+1300  push reader
+1808  cmp end
+3010  jmp init
+1300  push reader
+1409  inc reader
+1200  pop reader
+2700  jmp read
+1015  end
+0001  inc
+0000  init
