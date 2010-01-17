@@ -1,7 +1,7 @@
 # lxs
 PREF=/usr/local/bin
 OPTS=
-VER=0.0.1
+VER=0.3
 PROG=lxs
 SRCDIR=src
 INCDIR=include
