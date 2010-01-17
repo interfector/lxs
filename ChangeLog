@@ -1,4 +1,8 @@
-2009-06-30 nex <nex@autistici.org>
+2009-01-17 nex <nex@autistici.org>
+
+* SymClass.cpp: char mode added
+
+* SymClass.cpp: fixed jump
 
 * SymClass.cpp: change display mode added
 
