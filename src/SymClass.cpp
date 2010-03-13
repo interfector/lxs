@@ -185,8 +185,13 @@ int SymClass::atoi(char * line)
 	int ret;
  
 	for(ret = 0;*line;line++)
+	{
 		if (*line >= '0' && *line <= '9')
 			ret = ret * 10 + ((int)*line - '0');
+		else
+			break;
+	}
+
 	return ret;
 }
 
@@ -196,11 +201,7 @@ int SymClass::execute()
 	int len = this->simpletron.count;
 	
 	for(this->simpletron.ip=0;this->simpletron.ip < len;this->simpletron.ip++)
-	{
 		op = execute_op(this->simpletron.mem[this->simpletron.ip]);
-		if(op)
-			return op;
-	}
 
 	return 0;
 }
@@ -246,7 +247,6 @@ void SymClass::dump()
 
 void SymClass::stdin_read()
 {
-	char * line = new char[256];
 	int op;
 		
 	while((op != -9999) && (this->simpletron.count < MAX_MEM))
@@ -256,8 +256,6 @@ void SymClass::stdin_read()
 		
 		this->simpletron.mem[this->simpletron.count++] = op;
 	}
-
-	delete [] line;
 }
 
 int SymClass::readfile(char * name)
@@ -271,7 +269,6 @@ int SymClass::readfile(char * name)
 		
 	while(!file.eof())
 	{
-		//file >> line;
 		
 		file.getline(line,256);
 
