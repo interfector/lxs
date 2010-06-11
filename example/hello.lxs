@@ -1,10 +1,15 @@
+#!/usr/local/bin/lxs -s
+
 3403 display char
-1107 print H
-1301 push printer
-1406 add one
-1201 pop printer
-2701 jmp snd
-0001 one
+1110 print H
+1301 push 01
+1408 add 1
+1201 pop 01
+2809 cmp 5
+2901 if != jmp 01
+3300 exit
+0001 1
+1115 initistr + 5
 0007 H
 0036 e
 0043 l

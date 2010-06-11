@@ -1,8 +1,28 @@
+/*
+* LXS
+* Copyright (C) 2010 nex
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include <iostream>
 #include <cstring>
 #include <lxs.h>
 
-int main(int argc,char *argv[])
+int
+main(int argc,char *argv[])
 {
 	int err = 0;
 	SymClass test;
@@ -13,7 +33,7 @@ int main(int argc,char *argv[])
 		
 		std::cout << "\n";
 
-	} else if (!strcmp(argv[1],"-s")) {
+	} else if (!strcmp(argv[1],"-s") || !strcmp(argv[1],"--source")) {
 		if (!argv[2])
 		{
 			std::cout << "Error bad usage, type -h for help." << std::endl;
@@ -30,7 +50,7 @@ int main(int argc,char *argv[])
 			return 1;
 		}
 
-	} else if (!strcmp(argv[1],"-x")) {
+	} else if (!strcmp(argv[1],"-x") || !strcmp(argv[1],"--binary")) {
 		if (!argv[2])
 		{
 			std::cout << "Error bad usage, type -h for help." << std::endl;
@@ -51,7 +71,7 @@ int main(int argc,char *argv[])
 			return 1;
 		}
 
-	} else if (!strcmp(argv[1],"-c")) {
+	} else if (!strcmp(argv[1],"-c") || !strcmp(argv[1],"--compile")) {
 		if (!argv[2] || !argv[3]) 
 		{
 			std::cout << "Error bad usage, type -h for help." << std::endl;
@@ -69,9 +89,17 @@ int main(int argc,char *argv[])
 		}
 
 		return 0;
-	} else if (!strcmp(argv[1],"-h")) {
-		std::cout << "Usage: " << argv[0] << " [-s] [-x] [-c]\n\t-s\tSelect the source file.\n";
-		std::cout << "\t-x\tSelect the binary source file.\n\t-c\tCompile from plain text source to binary source file.\n";
+	} else if (!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version")) {
+		printf(VTEXT);
+
+		return 0;
+	} else if (!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")) {
+		std::cout << "Usage: " << argv[0] << " [-s <file>] [-x <file>] [-c <file> <compiled>]\n"
+				   "\t-s|--source\tSelect the source file.\n"
+				   "\t-x|--binary\tSelect the binary source file.\n"
+				   "\t-c|--compile\tCompile from plain text source to binary source file.\n"
+				   "\t-v|--version\tShow version.\n"
+				   "\t-h|--help\tShow this help.\n";
 		
 		return 0;
 	} else {

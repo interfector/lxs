@@ -1,14 +1,41 @@
+/*
+* LXS
+* Copyright (C) 2010 nex
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <cstring>
 #include <lxs.h>
 
-void sym_read(sym_code_t * code)
+void 
+sym_read(sym_code_t * code)
 {
-	std::cin >> code->mem[code->op_code];
+	switch(code->mode)
+	{
+		default:
+			std::cin >> code->mem[code->op_code];
+			break;
+	}
 }
 
-void sym_write(sym_code_t * code)
+void
+sym_write(sym_code_t * code)
 {
 	switch(code->mode)
 	{
@@ -32,89 +59,106 @@ void sym_write(sym_code_t * code)
 	std::cout << std::endl;
 }
 
-void sym_pop(sym_code_t * code)
+void 
+sym_pop(sym_code_t * code)
 {
 	code->mem[code->op_code] = code->eax;
 }
 
-void sym_push(sym_code_t * code)
+void
+sym_push(sym_code_t * code)
 {
 	code->eax = code->mem[code->op_code];
 }
 
-void sym_add(sym_code_t * code)
+void 
+sym_add(sym_code_t * code)
 {
 	code->eax += code->mem[code->op_code];
 }
 
-void sym_sub(sym_code_t * code)
+void
+sym_sub(sym_code_t * code)
 {
 	code->eax -= code->mem[code->op_code];
 }
 
-void sym_mul(sym_code_t * code)
+void
+sym_mul(sym_code_t * code)
 {
 	code->eax *= code->mem[code->op_code];
 }
 
-void sym_div(sym_code_t * code)
+void
+sym_div(sym_code_t * code)
 {
 	if(code->mem[code->op_code] != 0)
 		code->eax /= code->mem[code->op_code];
 }
 
-void sym_mod(sym_code_t * code)
+void
+sym_mod(sym_code_t * code)
 {
 	if(code->mem[code->op_code] != 0)
 		code->eax %= code->mem[code->op_code];
 }
 
-void sym_and(sym_code_t * code)
+void 
+sym_and(sym_code_t * code)
 {
 	code->eax &= code->mem[code->op_code];
 }
 
-void sym_or(sym_code_t * code)
+void 
+sym_or(sym_code_t * code)
 {
 	code->eax |= code->mem[code->op_code];
 }
 
-void sym_xor(sym_code_t * code)
+void
+sym_xor(sym_code_t * code)
 {
 	code->eax ^= code->mem[code->op_code];
 }
 
-void sym_not(sym_code_t * code)
+void 
+sym_not(sym_code_t * code)
 {
 	code->eax = !code->mem[code->op_code];
 }
 
-void sym_shl(sym_code_t * code)
+void
+sym_shl(sym_code_t * code)
 {
 	code->eax <<= code->mem[code->op_code];
 }
 
-void sym_shr(sym_code_t * code)
+void
+sym_shr(sym_code_t * code)
 {
 	code->eax >>= code->mem[code->op_code];
 }
 
-void sym_del(sym_code_t * code)
+void
+sym_del(sym_code_t * code)
 {
 	code->mem[code->op_code] = 0;
 }
 
-void sym_nop(sym_code_t * code)
+void
+sym_nop(sym_code_t * code)
 {
 	/* NULL :D */ 
 }
 
-void sym_jmp(sym_code_t * code)
+void
+sym_jmp(sym_code_t * code)
 {
 	code->ip = code->op_code-1;
 }
 
-void sym_cmp(sym_code_t * code)
+void
+sym_cmp(sym_code_t * code)
 {
 	if (code->eax == code->mem[code->op_code])
 		code->flag = 0;
@@ -124,43 +168,91 @@ void sym_cmp(sym_code_t * code)
 		code->flag = 2;
 }
 
-void sym_jn(sym_code_t * code)
+void 
+sym_jn(sym_code_t * code)
 {
-	if ( code->flag == 1 || code->flag == 2 )
+	if ( code->flag != 0 )
 		code->ip = code->op_code-1;
 }
 
-void sym_jz(sym_code_t * code)
+void
+sym_jz(sym_code_t * code)
 {
 	if (!code->flag)
 		code->ip = code->op_code-1;
 }
 
-void sym_jm(sym_code_t * code)
+void
+sym_jm(sym_code_t * code)
 {
 	if (code->flag == 1)
 		code->ip = code->op_code-1;
 }
 
-void sym_jg(sym_code_t * code)
+void 
+sym_jg(sym_code_t * code)
 {
 	if (code->flag == 2)
 		code->ip = code->op_code-1;
 }
 
-void sym_exit(sym_code_t * code)
+void 
+sym_exit(sym_code_t * code)
 {
 	std::cout << "[?]Exit code: " << code->op_code << std::endl;
 	
 	code->ip = code->count;
 }
 
-void sym_chmod(sym_code_t * code)
+void
+sym_chmod(sym_code_t * code)
 {
 	code->mode = code->op_code;
 }
 
-void toBin(int num)
+void
+sym_inc(sym_code_t * code)
+{
+	code->mem[code->op_code]++;
+}
+
+void
+sym_dec(sym_code_t * code)
+{
+	code->mem[code->op_code]--;
+}
+
+void 
+sym_call(sym_code_t * code)
+{
+	code->old_ip = code->ip + 1;
+
+	code->ip = code->op_code-1;
+}
+
+void 
+sym_ret(sym_code_t * code)
+{
+	code->ip = code->old_ip - 1;
+}
+
+void 
+sym_stpush(sym_code_t * code)
+{
+	code->stack.mem = (int*)realloc(code->stack.mem,++code->stack.mm_len * sizeof(int));
+
+	code->stack.mem[code->stack.mm_len-1] = code->mem[code->op_code];
+}
+
+void 
+sym_stpop(sym_code_t * code)
+{
+	code->mem[code->op_code] = code->stack.mem[code->stack.mm_len-1];
+	code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+}
+
+void
+toBin(int num)
 {
 	int a;
 
@@ -178,9 +270,12 @@ SymClass::SymClass()
 	this->simpletron.flag = -1;
 	this->simpletron.ip = 0;
 	this->simpletron.mode = 0;
+	this->simpletron.stack.mem = (int*)malloc(sizeof(int));
+	this->simpletron.stack.mm_len = 0;
 }
 
-int SymClass::atoi(char * line)
+int
+SymClass::atoi(char * line)
 {
 	int ret;
  
@@ -195,18 +290,20 @@ int SymClass::atoi(char * line)
 	return ret;
 }
 
-int SymClass::execute()
+int
+SymClass::execute()
 {
 	int op = 0;
 	int len = this->simpletron.count;
 	
-	for(this->simpletron.ip=0;this->simpletron.ip < len;this->simpletron.ip++)
+	for(this->simpletron.ip = 0;this->simpletron.ip < len;this->simpletron.ip++)
 		op = execute_op(this->simpletron.mem[this->simpletron.ip]);
 
 	return 0;
 }
 
-int SymClass::execute_op(int op)
+int
+SymClass::execute_op(int op)
 {
 	int call = (op / 100)-10;
 	
@@ -215,22 +312,23 @@ int SymClass::execute_op(int op)
 	if (op == -9999)
 		return 0;
 	
-	if(call >= 0 && call <= 24)
+	if(call >= 0 && call <= MAX_CALL)
 		sym_code_table[call](&simpletron);
 	
 	return 0;
 }
 
-void SymClass::dump()
+void
+SymClass::dump()
 {
 	int i;
 
-	std::cout << std::dec << "\n=== Registri: ===\n";
-	std::cout << "Accumulatore:        " << this->simpletron.eax << "\n";
-	std::cout << "Numero istruzione:   " << this->simpletron.count << "\n";
-	std::cout << "Operation Code:      " << this->simpletron.op_code << "\n";
+	std::cout << std::dec << "\n=== DUMP ===\n";
+	std::cout << "AX :\t\t\t" << this->simpletron.eax << "\n";
+	std::cout << "Instruction no. :\t" << this->simpletron.count << "\n";
+	std::cout << "Operation Code :\t" << this->simpletron.op_code << "\n";
 	std::cout << "\n";
-	std::cout << "Memoria:\n";
+	std::cout << "Memory:\n";
 
 	for (i = 0; i < 10; i++)
 		printf(" %5d", i);
@@ -245,20 +343,22 @@ void SymClass::dump()
 	std::cout << "\n";
 }
 
-void SymClass::stdin_read()
+void
+SymClass::stdin_read()
 {
 	int op;
 		
 	while((op != -9999) && (this->simpletron.count < MAX_MEM))
 	{
-		std::cout << (long)this->simpletron.count << " ? ";
+		printf("%02d ? ",this->simpletron.count);
 		std::cin >> op;
 		
 		this->simpletron.mem[this->simpletron.count++] = op;
 	}
 }
 
-int SymClass::readfile(char * name)
+int
+SymClass::readfile(char * name)
 {
 	std::ifstream file(name,std::ifstream::in);
 	char * line = new char[256];
@@ -272,6 +372,9 @@ int SymClass::readfile(char * name)
 		
 		file.getline(line,256);
 
+		if(line[0] == '#' || line[0] == '\0')
+			continue;
+
 		op = this->atoi(line);
 
 		this->simpletron.mem[this->simpletron.count++] = op;
@@ -284,7 +387,8 @@ int SymClass::readfile(char * name)
 	return 0;
 }
 
-int SymClass::read_bin(char * name)
+int
+SymClass::read_bin(char * name)
 {
 	std::ifstream file(name,std::ifstream::binary);
 	char * line = new char[4];
@@ -316,7 +420,8 @@ int SymClass::read_bin(char * name)
 	return 0;
 }
 
-int SymClass::pseudo_compile(char * name,char * out)
+int
+SymClass::pseudo_compile(char * name,char * out)
 {
 	std::ifstream file(name,std::ifstream::in);
 	std::ofstream  outf(out,std::ofstream::binary);
@@ -339,7 +444,10 @@ int SymClass::pseudo_compile(char * name,char * out)
 		if(!*line)
 			break;
 
-		for(i=0;i<4;i++)
+		if(*line == '#')
+			continue;
+
+		for(i = 0;i < 4;i++)
 			line[i] -= '0';
 
 		outf.write(line,4);

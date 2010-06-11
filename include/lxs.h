@@ -1,3 +1,22 @@
+/*
+* LXS
+* Copyright (C) 2010 nex
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #ifndef _LXS_H_
 #define _LXS_H_
 
@@ -14,7 +33,7 @@
 #define SYM_MUL	6  // Multiple the element fot accumulator
 #define SYM_DIV	7  // Divide the accumulator by element
 #define SYM_MOD	8  // Module operand
-#define SYM_AND	0  // And operand
+#define SYM_AND	9  // And operand
 #define SYM_OR		10 // Or operand
 #define SYM_XOR	11 // Xor operand
 #define SYM_NOT	12 // Not operand
@@ -30,8 +49,22 @@
 #define SYM_JG		22 // Jump >=
 #define SYM_EXIT	23 // Exit forced
 #define SYM_CHMOD	24 // Change display mode
+#define SYM_INC	25 // Increment the accumulator
+#define SYM_DEC	26 // Decrement the accumulator
+#define SYM_CALL	27 // Calls an address
+#define SYM_RET	28 // Return to the previous IP
+#define SYM_STPUSH	29 // Push a variable to the stack
+#define SYM_STPOP	30 // Pop a variable to the stack
+
+#define MAX_CALL	30
 
 extern "C" {
+
+	typedef struct {
+		int* mem;
+		int  mm_len;
+	} stack_t;
+
 	typedef struct {
 		int mem[MAX_MEM]; // Memory
 
@@ -42,36 +75,44 @@ extern "C" {
 		int flag;  // Jump flag
 	
 		int ip;    // Istruction Pointer
+		int old_ip; // IP for call function
 		int op_code; // Operation code
-	
+
+		stack_t stack; // LIFO Stack
 	} sym_code_t;
 
 	void toBin(int num);
-	void sym_read(sym_code_t * code);
-	void sym_write(sym_code_t * code);
-	void sym_pop(sym_code_t * code);
-	void sym_push(sym_code_t * code);
-	void sym_add(sym_code_t * code);
-	void sym_sub(sym_code_t * code);
-	void sym_mul(sym_code_t * code);
-	void sym_div(sym_code_t * code);
-	void sym_mod(sym_code_t * code);
-	void sym_and(sym_code_t * code);
-	void sym_or(sym_code_t * code);
-	void sym_xor(sym_code_t * code);
-	void sym_not(sym_code_t * code);
-	void sym_shl(sym_code_t * code);
-	void sym_shr(sym_code_t * code);
-	void sym_del(sym_code_t * code);
-	void sym_nop(sym_code_t * code);
-	void sym_jmp(sym_code_t * code);
-	void sym_cmp(sym_code_t * code);
-	void sym_jn(sym_code_t * code);
-	void sym_jz(sym_code_t * code);
-	void sym_jm(sym_code_t * code);
-	void sym_jg(sym_code_t * code);
-	void sym_exit(sym_code_t * code);
-	void sym_chmod(sym_code_t * code);
+	void sym_read(sym_code_t*);
+	void sym_write(sym_code_t*);
+	void sym_pop(sym_code_t*);
+	void sym_push(sym_code_t*);
+	void sym_add(sym_code_t*);
+	void sym_sub(sym_code_t*);
+	void sym_mul(sym_code_t*);
+	void sym_div(sym_code_t*);
+	void sym_mod(sym_code_t*);
+	void sym_and(sym_code_t*);
+	void sym_or(sym_code_t*);
+	void sym_xor(sym_code_t*);
+	void sym_not(sym_code_t*);
+	void sym_shl(sym_code_t*);
+	void sym_shr(sym_code_t*);
+	void sym_del(sym_code_t*);
+	void sym_nop(sym_code_t*);
+	void sym_jmp(sym_code_t*);
+	void sym_cmp(sym_code_t*);
+	void sym_jn(sym_code_t*);
+	void sym_jz(sym_code_t*);
+	void sym_jm(sym_code_t*);
+	void sym_jg(sym_code_t*);
+	void sym_exit(sym_code_t*);
+	void sym_chmod(sym_code_t*);
+	void sym_inc(sym_code_t*);
+	void sym_dec(sym_code_t*);
+	void sym_call(sym_code_t*);
+	void sym_ret(sym_code_t*);
+	void sym_stpush(sym_code_t*);
+	void sym_stpop(sym_code_t*);
 
 	static void (*sym_code_table[])(sym_code_t *) = { 
 		sym_read,
@@ -98,9 +139,15 @@ extern "C" {
 		sym_jm,
 		sym_jg,
 		sym_exit,
-		sym_chmod };
+		sym_chmod,
+		sym_inc,
+		sym_dec,
+		sym_call,
+		sym_ret,
+		sym_stpush,
+		sym_stpop };
 		
-};
+}
 
 class SymClass {
 	public:
@@ -118,5 +165,10 @@ class SymClass {
 		int execute_op(int op);
 		int atoi(char * str);
 };
+
+#define VTEXT "lxs-"VERSION" Copyright (C) 2010 nex \n" \
+		  "This program comes with ABSOLUTELY NO WARRANTY.\n" \
+		  "This is free software, and you are welcome to redistribute it\n" \
+	       "under certain conditions.\n"
 
 #endif

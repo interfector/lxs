@@ -1,0 +1,25 @@
+#!/usr/local/bin/llmne -x
+DISPLAY CHAR
+
+LOOP:
+
+WRITE HELLO
+PUSH LOOP
+ADD I
+POP LOOP
+CMP TERM
+JN  LOOP
+EXIT 0
+
+I:
+0001
+
+TERM:
+1115
+
+HELLO:
+0007 H
+0036 e
+0043 l
+0043 l
+0046 o

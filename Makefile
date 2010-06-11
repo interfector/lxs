@@ -1,13 +1,12 @@
 # lxs
 PREF=/usr/local/bin
-OPTS=
-VER=0.3b
+VERSION=0.3.2
+OPTS=-Wall -pedantic -O3 -I./include -DVERSION=\"${VERSION}\"
 PROG=lxs
 SRCDIR=src
-INCDIR=include
 
 all:
-	g++ $(OPTS) -I$(INCDIR) -o $(PROG) $(SRCDIR)/main.cpp $(SRCDIR)/SymClass.cpp
+	g++ $(OPTS) -o $(PROG) $(SRCDIR)/main.cpp $(SRCDIR)/SymClass.cpp
 clean:
 	rm $(PROG)
 install:
