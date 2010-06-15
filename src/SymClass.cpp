@@ -49,14 +49,15 @@ sym_write(sym_code_t * code)
 			toBin(code->mem[code->op_code]);
 			break;
 		case 3:
-			std::cout << (char)(code->mem[code->op_code]+'A');
+			std::cout << (char)(code->mem[code->op_code]);
 			break;
 		default:
 			std::cout << code->mem[code->op_code];
 			break;
 	}
 
-	std::cout << std::endl;
+	if(code->mode != 3)
+		std::cout << std::endl;
 }
 
 void 

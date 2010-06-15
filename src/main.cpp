@@ -90,7 +90,7 @@ main(int argc,char *argv[])
 
 		return 0;
 	} else if (!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version")) {
-		printf(VTEXT);
+		std::cout << VTEXT << std::endl;
 
 		return 0;
 	} else if (!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")) {

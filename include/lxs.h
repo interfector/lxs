@@ -82,35 +82,35 @@ extern "C" {
 	} sym_code_t;
 
 	void toBin(int num);
-	void sym_read(sym_code_t*);
+	void sym_read (sym_code_t*);
 	void sym_write(sym_code_t*);
-	void sym_pop(sym_code_t*);
+	void sym_pop (sym_code_t*);
 	void sym_push(sym_code_t*);
-	void sym_add(sym_code_t*);
-	void sym_sub(sym_code_t*);
-	void sym_mul(sym_code_t*);
-	void sym_div(sym_code_t*);
-	void sym_mod(sym_code_t*);
-	void sym_and(sym_code_t*);
-	void sym_or(sym_code_t*);
-	void sym_xor(sym_code_t*);
-	void sym_not(sym_code_t*);
-	void sym_shl(sym_code_t*);
-	void sym_shr(sym_code_t*);
-	void sym_del(sym_code_t*);
-	void sym_nop(sym_code_t*);
-	void sym_jmp(sym_code_t*);
-	void sym_cmp(sym_code_t*);
-	void sym_jn(sym_code_t*);
-	void sym_jz(sym_code_t*);
-	void sym_jm(sym_code_t*);
-	void sym_jg(sym_code_t*);
+	void sym_add (sym_code_t*);
+	void sym_sub (sym_code_t*);
+	void sym_mul (sym_code_t*);
+	void sym_div (sym_code_t*);
+	void sym_mod (sym_code_t*);
+	void sym_and (sym_code_t*);
+	void sym_or  (sym_code_t*);
+	void sym_xor (sym_code_t*);
+	void sym_not (sym_code_t*);
+	void sym_shl (sym_code_t*);
+	void sym_shr (sym_code_t*);
+	void sym_del (sym_code_t*);
+	void sym_nop (sym_code_t*);
+	void sym_jmp (sym_code_t*);
+	void sym_cmp (sym_code_t*);
+	void sym_jn  (sym_code_t*);
+	void sym_jz  (sym_code_t*);
+	void sym_jm  (sym_code_t*);
+	void sym_jg  (sym_code_t*);
 	void sym_exit(sym_code_t*);
 	void sym_chmod(sym_code_t*);
-	void sym_inc(sym_code_t*);
-	void sym_dec(sym_code_t*);
+	void sym_inc (sym_code_t*);
+	void sym_dec (sym_code_t*);
 	void sym_call(sym_code_t*);
-	void sym_ret(sym_code_t*);
+	void sym_ret (sym_code_t*);
 	void sym_stpush(sym_code_t*);
 	void sym_stpop(sym_code_t*);
 
@@ -169,6 +169,6 @@ class SymClass {
 #define VTEXT "lxs-"VERSION" Copyright (C) 2010 nex \n" \
 		  "This program comes with ABSOLUTELY NO WARRANTY.\n" \
 		  "This is free software, and you are welcome to redistribute it\n" \
-	       "under certain conditions.\n"
+	       "under certain conditions."
 
 #endif
