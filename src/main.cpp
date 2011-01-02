@@ -18,14 +18,30 @@
 
 
 #include <iostream>
+#include <cstdlib>
 #include <cstring>
 #include <lxs.h>
+
+#include <csignal>
+
+SymClass test;
+
+void
+now_dump(  )
+{
+	std::cout << "\n====== END EXECUTING ======\n";
+
+	test.dump();
+
+	exit( 1 );
+}
 
 int
 main(int argc,char *argv[])
 {
 	int err = 0;
-	SymClass test;
+
+	signal( SIGINT, (__sighandler_t)now_dump );
 
 	if(!argv[1])
 	{

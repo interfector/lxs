@@ -21,13 +21,34 @@
 #include <fstream>
 #include <cstdlib>
 #include <cstring>
+#include <cstdarg>
 #include <lxs.h>
+
+void
+dprintf( char* fmt, ...)
+{
+	va_list va;
+
+	va_start( va, fmt);
+
+
+if( debug )
+{
+	fprintf(stderr, "[DEBUG] ");
+	vfprintf( stderr, fmt, va);
+}
+
+	va_end(va);
+}
 
 void 
 sym_read(sym_code_t * code)
 {
 	switch(code->mode)
 	{
+		case 3:
+			code->mem[code->op_code] = getchar();
+			break;
 		default:
 			std::cin >> code->mem[code->op_code];
 			break;
@@ -226,15 +247,30 @@ sym_dec(sym_code_t * code)
 void 
 sym_call(sym_code_t * code)
 {
-	code->old_ip = code->ip + 1;
+	code->stack.mem = (int*)realloc(code->stack.mem,++code->stack.mm_len * sizeof(int));
+	code->stack.mem[code->stack.mm_len-1] = code->ip;
 
-	code->ip = code->op_code-1;
+	dprintf("stack-1: %d\n", code->stack.mem[code->stack.mm_len-1]);
+/*
+	code->old_ip = code->ip + 1;
+*/
+	code->ip = code->op_code - 1;
 }
 
 void 
 sym_ret(sym_code_t * code)
 {
-	code->ip = code->old_ip - 1;
+/*	code->ip = code->old_ip - 1; */
+
+	if( code->stack.mm_len > 0 )
+	{
+
+		code->ip = code->stack.mem[code->stack.mm_len - 1];
+
+		dprintf("ip: %d\n", code->ip);
+
+		code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+	}
 }
 
 void 
@@ -242,14 +278,45 @@ sym_stpush(sym_code_t * code)
 {
 	code->stack.mem = (int*)realloc(code->stack.mem,++code->stack.mm_len * sizeof(int));
 
-	code->stack.mem[code->stack.mm_len-1] = code->mem[code->op_code];
+	code->stack.mem[code->stack.mm_len - 1] = code->mem[code->op_code];
+
+	code->stack.current++;
 }
 
 void 
 sym_stpop(sym_code_t * code)
 {
-	code->mem[code->op_code] = code->stack.mem[code->stack.mm_len-1];
-	code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+	if( code->stack.mm_len > 0 )
+	{
+		if( code->stack.current >= 0 )
+		{
+			code->mem[code->op_code] = code->stack.mem[/*code->stack.mm_len-1*/code->stack.current];
+			memcpy( &code->stack.mem[code->stack.current], &code->stack.mem[code->stack.current + 1], (code->stack.mm_len - code->stack.current));
+			code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+
+			code->stack.current--;
+		} else
+			code->mem[code->op_code] = code->stack.mem[0];
+/*
+		code->mem[code->op_code] = code->stack.mem[code->stack.current];
+		memcpy( code->stack.mem, &code->stack.mem[code->stack.current], (code->stack.mm_len-1) * sizeof(int));
+		code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+*/
+	}
+}
+
+void
+sym_addsp(sym_code_t * code)
+{
+	if( code->stack.current <= (code->stack.mm_len-1))
+		code->stack.current += code->op_code;
+}
+
+void
+sym_subsp(sym_code_t * code)
+{
+	if( code->stack.current > 0 )
+		code->stack.current -= code->op_code;
 }
 
 void
@@ -265,6 +332,7 @@ toBin(int num)
 
 SymClass::SymClass()
 {
+	this->simpletron.code = 0;
 	this->simpletron.op_code = 0;
 	this->simpletron.count = 0;
 	this->simpletron.eax = 0;
@@ -273,6 +341,10 @@ SymClass::SymClass()
 	this->simpletron.mode = 0;
 	this->simpletron.stack.mem = (int*)malloc(sizeof(int));
 	this->simpletron.stack.mm_len = 0;
+	this->simpletron.stack.current = -1;
+
+	dprintf(" simpletron.stack = 0x%x\n", this->simpletron.stack );
+	dprintf(" simpletron.stack.mem = 0x%x\n", this->simpletron.stack.mem );
 }
 
 int
@@ -307,6 +379,8 @@ int
 SymClass::execute_op(int op)
 {
 	int call = (op / 100)-10;
+
+	this->simpletron.code = op;
 	
 	this->simpletron.op_code = op % 100;
 
@@ -327,7 +401,7 @@ SymClass::dump()
 	std::cout << std::dec << "\n=== DUMP ===\n";
 	std::cout << "AX :\t\t\t" << this->simpletron.eax << "\n";
 	std::cout << "Instruction no. :\t" << this->simpletron.count << "\n";
-	std::cout << "Operation Code :\t" << this->simpletron.op_code << "\n";
+	std::cout << "Operation Code :\t" << this->simpletron.code << "\n";
 	std::cout << "\n";
 	std::cout << "Memory:\n";
 
@@ -339,6 +413,18 @@ SymClass::dump()
 		if (i % 10 == 0) 
 			std::cout << "\n" << i << ((!i) ? " " : "");
 		printf(" %+.4d", this->simpletron.mem[i]);
+	}
+
+	std::cout << "\n\nStack:\n";
+
+	for (i = 0; i < 10; i++)
+		printf(" %5d", i);
+
+	for(i = 0;i < this->simpletron.stack.mm_len;i++)
+	{
+		if (i % 10 == 0) 
+			std::cout << "\n" << i << ((!i) ? " " : "");
+		printf(" %+.4d", this->simpletron.stack.mem[i]);
 	}
 
 	std::cout << "\n";
@@ -394,20 +480,24 @@ SymClass::read_bin(char * name)
 	std::ifstream file(name,std::ifstream::binary);
 	char * line = new char[4];
 	int i;
+
+	struct lxsHdr *header;
 	
 	if (!file.is_open())
 		return 1;
 		
-	file.read(line,4);
-	
-	if(strcmp(line,BIN_MAGIC))
+	file.read(line, sizeof(struct lxsHdr));
+
+	header = (struct lxsHdr*)strdup(line);
+
+	if(strncmp(header->magic, BIN_MAGIC, 4))
 		return 2;
 		
-	while(!file.eof())
+	while(this->simpletron.count < header->prog_size)
 	{
-		file.read(line,4);
+		file.read(line, 4);
 
-		for(i=0;i<4;i++)
+		for(i = 0;i < 4;i++)
 			if (line[i] >= 0 && line[i] <= 9)
 				line[i] += '0';
 
@@ -427,14 +517,16 @@ SymClass::pseudo_compile(char * name,char * out)
 	std::ifstream file(name,std::ifstream::in);
 	std::ofstream  outf(out,std::ofstream::binary);
 	char * line = new char[256];
-	int i;
+	int i,size = 0;
+
+	struct lxsHdr head;
 	
 	if (!file.is_open() || !outf.is_open())
 		return 1;
 		
-	strcpy(line,BIN_MAGIC);
+	strncpy(head.magic, BIN_MAGIC, 4);
 	
-	outf.write(line,4);
+	outf.write((char*)&head, sizeof( struct lxsHdr ));
 		
 	while(!file.eof())
 	{
@@ -451,8 +543,16 @@ SymClass::pseudo_compile(char * name,char * out)
 		for(i = 0;i < 4;i++)
 			line[i] -= '0';
 
-		outf.write(line,4);
+		outf.write(line, 4);
+
+		size += 4;
 	}
+
+	head.prog_size = size;
+
+	outf.seekp( 0, std::ios::beg );
+
+	outf.write((char*)&head, sizeof( struct lxsHdr ));
 	
 	file.close();
 	outf.close();

@@ -55,30 +55,44 @@
 #define SYM_RET	28 // Return to the previous IP
 #define SYM_STPUSH	29 // Push a variable to the stack
 #define SYM_STPOP	30 // Pop a variable to the stack
+#define SYM_ADDSP	31 // Increase the stack pointer
+#define SYM_SUBSP	32 // Decrease the stack pointer
 
-#define MAX_CALL	30
+#define MAX_CALL	32
 
 extern "C" {
+
+	struct lxsHdr {
+		char magic[4];
+		int prog_size;
+	};
+
+	struct lxsSym_entry {
+		int value;
+		char* name;
+	};
 
 	typedef struct {
 		int* mem;
 		int  mm_len;
-	} stack_t;
+		int current;
+	} _stack_t;
 
 	typedef struct {
 		int mem[MAX_MEM]; // Memory
 
-		int mode; // Display mode
+		int mode;    // Display mode
 
-		int count; // Operation count
-		int eax;   // Accumulator
-		int flag;  // Jump flag
+		int count;   // Operation count
+		int eax;     // Accumulator
+		int flag;    // Jump flag
 	
-		int ip;    // Istruction Pointer
-		int old_ip; // IP for call function
+		int ip;      // Istruction Pointer
+		int old_ip;  // IP for call function
+		int code;    // Instruction code
 		int op_code; // Operation code
 
-		stack_t stack; // LIFO Stack
+		_stack_t stack; // LIFO Stack
 	} sym_code_t;
 
 	void toBin(int num);
@@ -113,6 +127,8 @@ extern "C" {
 	void sym_ret (sym_code_t*);
 	void sym_stpush(sym_code_t*);
 	void sym_stpop(sym_code_t*);
+	void sym_addsp(sym_code_t*);
+	void sym_subsp(sym_code_t*);
 
 	static void (*sym_code_table[])(sym_code_t *) = { 
 		sym_read,
@@ -145,7 +161,10 @@ extern "C" {
 		sym_call,
 		sym_ret,
 		sym_stpush,
-		sym_stpop };
+		sym_stpop,
+		sym_addsp,
+		sym_subsp
+	};
 		
 }
 
@@ -165,6 +184,8 @@ class SymClass {
 		int execute_op(int op);
 		int atoi(char * str);
 };
+
+static int debug = 0; /* 1 for debug */
 
 #define VTEXT "lxs-"VERSION" Copyright (C) 2010 nex \n" \
 		  "This program comes with ABSOLUTELY NO WARRANTY.\n" \
