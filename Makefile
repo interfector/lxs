@@ -1,6 +1,6 @@
 # lxs
 PREF=/usr/local/bin
-VERSION=0.3.3
+VERSION=1.2.2
 OPTS=-Wall -pedantic -O3 -I./include -DVERSION=\"${VERSION}\" -lc
 PROG=lxs
 SRCDIR=src

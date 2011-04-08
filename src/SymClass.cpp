@@ -248,7 +248,7 @@ void
 sym_call(sym_code_t * code)
 {
 	code->stack.mem = (int*)realloc(code->stack.mem,++code->stack.mm_len * sizeof(int));
-	code->stack.mem[code->stack.mm_len-1] = code->ip;
+	code->stack.mem[code->stack.mm_len-1] = code->ip + 1;
 
 	dprintf("stack-1: %d\n", code->stack.mem[code->stack.mm_len-1]);
 /*
@@ -265,7 +265,7 @@ sym_ret(sym_code_t * code)
 	if( code->stack.mm_len > 0 )
 	{
 
-		code->ip = code->stack.mem[code->stack.mm_len - 1];
+		code->ip = code->stack.mem[code->stack.mm_len - 1] - 1;
 
 		dprintf("ip: %d\n", code->ip);
 
