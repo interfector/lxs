@@ -1,5 +1,7 @@
 2009-01-17 nex <nex@autistici.org>
 
+* SymClass.cpp: fixed stack bug
+
 * SymClass.cpp: implemented call and ret 
 
 * SymClass.cpp: stpush and stpop implemented in a LIFO stack

@@ -150,6 +150,12 @@ sym_not(sym_code_t * code)
 }
 
 void
+sym_onesc(sym_code_t * code)
+{
+	code->eax = ~code->mem[code->op_code];
+}
+
+void
 sym_shl(sym_code_t * code)
 {
 	code->eax <<= code->mem[code->op_code];
@@ -249,6 +255,7 @@ sym_call(sym_code_t * code)
 {
 	code->stack.mem = (int*)realloc(code->stack.mem,++code->stack.mm_len * sizeof(int));
 	code->stack.mem[code->stack.mm_len-1] = code->ip + 1;
+	code->stack.current++; // ADD
 
 	dprintf("stack-1: %d\n", code->stack.mem[code->stack.mm_len-1]);
 /*
@@ -269,7 +276,14 @@ sym_ret(sym_code_t * code)
 
 		dprintf("ip: %d\n", code->ip);
 
-		code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+		if( code->stack.current >= 0 )
+		{
+			memcpy( &code->stack.mem[code->stack.current], &code->stack.mem[code->stack.current + 1], (code->stack.mm_len - code->stack.current));
+			code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int));
+			code->stack.current--;
+			dprintf("stack.current: %d\n", code->stack.current);
+		} else
+			code->stack.mem = (int*)realloc(code->stack.mem,--code->stack.mm_len * sizeof(int)); // ONLY
 	}
 }
 
@@ -415,7 +429,7 @@ SymClass::dump()
 		printf(" %+.4d", this->simpletron.mem[i]);
 	}
 
-	std::cout << "\n\nStack:\n";
+	std::cout << "\n\nStack(" << this->simpletron.stack.current << ")\n";
 
 	for (i = 0; i < 10; i++)
 		printf(" %5d", i);

@@ -57,8 +57,9 @@
 #define SYM_STPOP	30 // Pop a variable to the stack
 #define SYM_ADDSP	31 // Increase the stack pointer
 #define SYM_SUBSP	32 // Decrease the stack pointer
+#define SYM_ONESC	33 // One's Complement
 
-#define MAX_CALL	32
+#define MAX_CALL	33
 
 extern "C" {
 
@@ -129,6 +130,7 @@ extern "C" {
 	void sym_stpop(sym_code_t*);
 	void sym_addsp(sym_code_t*);
 	void sym_subsp(sym_code_t*);
+	void sym_onesc(sym_code_t*);
 
 	static void (*sym_code_table[])(sym_code_t *) = { 
 		sym_read,
@@ -163,7 +165,8 @@ extern "C" {
 		sym_stpush,
 		sym_stpop,
 		sym_addsp,
-		sym_subsp
+		sym_subsp,
+		sym_onesc
 	};
 		
 }
@@ -185,7 +188,11 @@ class SymClass {
 		int atoi(char * str);
 };
 
-static int debug = 0; /* 1 for debug */
+#ifdef DEBUG
+static int debug = 1; /* 1 for debug */
+#else
+static int debug = 0;
+#endif
 
 #define VTEXT "lxs-"VERSION" Copyright (C) 2010 nex \n" \
 		  "This program comes with ABSOLUTELY NO WARRANTY.\n" \
